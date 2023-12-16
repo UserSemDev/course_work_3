@@ -6,24 +6,39 @@ from utils.func import (load_json_file, get_filter_json_file, get_convert_check,
 
 
 def test_load_json_file():
+    """Тест проверяющий загрузку json файла
+    path1: если загружен обычный json
+    path2: если загружен пустой json
+    path3: если указан неверный путь до json"""
     path1 = os.path.join(TEST_JSON_PATH, 'has_data_operations.json')
-    assert load_json_file(path1) == [{"1": "one"}, {"2": "two"}, {"3": "three"}]
     path2 = os.path.join(TEST_JSON_PATH, 'has_null_operations.json')
-    assert load_json_file(path2) == []
     path3 = os.path.join(TEST_JSON_PATH, 'file_not_found.json')
+    assert load_json_file(path1) == [{"1": "one"}, {"2": "two"}, {"3": "three"}]
+    assert load_json_file(path2) == []
     assert load_json_file(path3) == "Файл json не найден"
 
 
 def test_get_filter_json_file():
-    data = [{"date": "2018-06-30T02:08:58.425572"},
-            {"date": "2019-07-03T18:35:29.512364"},
-            {"date": "2019-08-26T10:50:58.294041"}]
-    assert get_filter_json_file(data) == [{"date": "2019-08-26T10:50:58.294041"},
-                                          {"date": "2019-07-03T18:35:29.512364"},
-                                          {"date": "2018-06-30T02:08:58.425572"}]
+    """Тест проверяющий сортировку по дате
+    data1: если json корректный
+    data2: если json содержит пустой словарь"""
+    data1 = [{"date": "2018-06-30T02:08:58.425572"},
+             {"date": "2019-07-03T18:35:29.512364"},
+             {"date": "2019-08-26T10:50:58.294041"}]
+    data2 = [{"date": "2018-06-30T02:08:58.425572"},
+             {},
+             {"date": "2019-07-03T18:35:29.512364"},
+             {"date": "2019-08-26T10:50:58.294041"}]
+    assert get_filter_json_file(data1) == [{"date": "2019-08-26T10:50:58.294041"},
+                                           {"date": "2019-07-03T18:35:29.512364"},
+                                           {"date": "2018-06-30T02:08:58.425572"}]
+    assert get_filter_json_file(data2) == [{"date": "2019-08-26T10:50:58.294041"},
+                                           {"date": "2019-07-03T18:35:29.512364"},
+                                           {"date": "2018-06-30T02:08:58.425572"}]
 
 
 def test_get_convert_check():
+    """Тест проверяющий правильное формирование номера карты или счета"""
     data1 = "Счет 64686473678894779589"
     data2 = "Maestro 1596837868705199"
     data3 = "Visa Platinum 8990922113665229"
@@ -33,11 +48,18 @@ def test_get_convert_check():
 
 
 def test_get_convert_date():
+    """Тест проверяющий правильное формирование даты"""
     date_transaction = {"date": "2018-07-11T02:26:18.671407"}
     assert get_convert_date(date_transaction) == "11.07.2018"
 
 
 def test_get_info_transaction():
+    """Тест проверяющий правильное формирование полного инфо о транзакции
+    data1: если нет ключа from в транзакции
+    data2: при переводе со счета на карту
+    data3: при переводе со счета на счет
+    data4: при переводе с карты на карту
+    """
     data1 = {"id": 596171168, "state": "EXECUTED", "date": "2018-07-11T02:26:18.671407",
              "operationAmount": {"amount": "79931.03", "currency": {"name": "руб.", "code": "RUB"}},
              "description": "Открытие вклада",
@@ -69,6 +91,7 @@ def test_get_info_transaction():
 
 
 def test_select_info_transaction():
+    """Тест проверяющий вывод конечного списка транзакций пользователю"""
     path1 = os.path.join(TEST_JSON_PATH, 'info_test_operations.json')
     with open(path1) as file:
         data_json = json.load(file)

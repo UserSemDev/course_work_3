@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 
 
 def load_json_file(json_file):
@@ -27,3 +28,6 @@ def get_convert_check(data):
     return finish_check
 
 
+def get_convert_date(data):
+    date_transaction = datetime.fromisoformat(data.get('date')).strftime('%d.%m.%Y')
+    return date_transaction

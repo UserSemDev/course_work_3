@@ -1,6 +1,6 @@
 import os
 from config import TEST_JSON_PATH
-from utils.func import load_json_file, get_filter_json_file
+from utils.func import load_json_file, get_filter_json_file, get_convert_check
 
 
 def test_load_json_file():
@@ -19,3 +19,12 @@ def test_get_filter_json_file():
     assert get_filter_json_file(data) == [{"date": "2019-08-26T10:50:58.294041"},
                                           {"date": "2019-07-03T18:35:29.512364"},
                                           {"date": "2018-06-30T02:08:58.425572"}]
+
+
+def test_get_convert_check():
+    data1 = "Счет 64686473678894779589"
+    data2 = "Maestro 1596837868705199"
+    data3 = "Visa Platinum 8990922113665229"
+    assert get_convert_check(data1) == "Счет **9589"
+    assert get_convert_check(data2) == "Maestro 1596 83** **** 5199"
+    assert get_convert_check(data3) == "Visa Platinum 8990 92** **** 5229"

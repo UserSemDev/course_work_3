@@ -14,3 +14,16 @@ def load_json_file(json_file):
 def get_filter_json_file(data):
     sorted_data = sorted([i for i in data if i], key=lambda x: x.get('date'), reverse=True)
     return sorted_data
+
+
+def get_convert_check(data):
+    data = data.split(' ')
+    finish_check = ""
+    if len(data[-1]) == 16:
+        check = data[-1][:6] + "*" * 6 + data[-1][-4:]
+        finish_check = f"{' '.join(data[:-1])} {' '.join([check[i:i + 4] for i in range(0, 16, 4)])}"
+    elif data[0].lower() == 'счет':
+        finish_check = f"{' '.join(data[:-1])} **{data[-1][-4:]}"
+    return finish_check
+
+

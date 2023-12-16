@@ -47,3 +47,12 @@ def get_info_transaction(data):
                         f"{data['operationAmount']['currency']['name']}")
     finish_data = f"{date_transact} {description}\n{check_from_to}\n{operation_amount}"
     return finish_data
+
+
+def get_select_info_transaction(json_data, user_state):
+    dict_state = {1: "EXECUTED", 2: "CANCELED"}
+    transaction_list = []
+    for item in json_data:
+        if item.get('state') == dict_state.get(user_state):
+            transaction_list.append(get_info_transaction(item))
+    return '\n\n'.join(transaction_list[:5])

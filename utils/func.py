@@ -31,3 +31,19 @@ def get_convert_check(data):
 def get_convert_date(data):
     date_transaction = datetime.fromisoformat(data.get('date')).strftime('%d.%m.%Y')
     return date_transaction
+
+
+def get_info_transaction(data):
+    date_transact = get_convert_date(data)
+    description = data.get('description')
+    if data.get('from'):
+        check_from = get_convert_check(data.get('from'))
+        check_to = get_convert_check(data.get('to'))
+        check_from_to = f"{check_from} -> {check_to}"
+    else:
+        check_to = get_convert_check(data.get('to'))
+        check_from_to = f"Аноним -> {check_to}"
+    operation_amount = (f"{data['operationAmount']['amount']} "
+                        f"{data['operationAmount']['currency']['name']}")
+    finish_data = f"{date_transact} {description}\n{check_from_to}\n{operation_amount}"
+    return finish_data

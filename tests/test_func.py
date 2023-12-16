@@ -1,7 +1,8 @@
 import os
+import json
 from config import TEST_JSON_PATH
 from utils.func import (load_json_file, get_filter_json_file, get_convert_check, get_convert_date,
-                        get_info_transaction)
+                        get_info_transaction, get_select_info_transaction)
 
 
 def test_load_json_file():
@@ -65,3 +66,21 @@ def test_get_info_transaction():
     assert get_info_transaction(data4) == ("19.08.2018 Перевод с карты на карту\n"
                                            "Visa Classic 6831 98** **** 7658 -> Visa Platinum 8990 92** **** 5229\n"
                                            "56883.54 USD")
+
+
+def test_select_info_transaction():
+    path1 = os.path.join(TEST_JSON_PATH, 'info_test_operations.json')
+    with open(path1) as file:
+        data_json = json.load(file)
+    assert get_select_info_transaction(data_json, 1) == ('03.07.2019 Перевод организации\n'
+                                                         'MasterCard 7158 30** **** 6758 -> Счет **5560\n'
+                                                         '8221.37 USD\n\n'
+                                                         '30.06.2018 Перевод организации\n'
+                                                         'Счет **6952 -> Счет **6702\n'
+                                                         '9824.07 USD')
+    assert get_select_info_transaction(data_json, 2) == ('14.10.2018 Перевод с карты на счет\n'
+                                                         'Maestro 3928 54** **** 4026 -> Счет **3493\n'
+                                                         '77751.04 руб.\n\n'
+                                                         '23.11.2018 Перевод с карты на карту\n'
+                                                         'Visa Gold 7305 79** **** 4042 -> Maestro 3364 92** **** 7194'
+                                                         '\n26971.25 руб.')
